@@ -1,6 +1,10 @@
-conda install matplotlib
 conda install -c conda-forge cvxpy
-conda install -c conda-forge jax
-conda install -c conda-forge jaxlib
 pip install z3
 pip install z3-solver
+conda install -c anaconda joblib
+pip install matplotlib
+conda install -c conda-forge scikit-learn
+pip install --upgrade "jax[cpu]"
+conda install -c conda-forge tqdm
+pip install cylp
+
