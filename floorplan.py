@@ -180,7 +180,7 @@ class FloorPlan(object):
             curr = box
         return constraints
 
-    def layout(self, solve=True):
+    def layout(self, solve=True, NS=False):
         constraints = []
         for box in self.boxes:
             
@@ -251,6 +251,7 @@ class FloorPlan(object):
             constraints += [self.max_x <= self.ox + self.boundary_W,
                             self.max_y <= self.oy + self.boundary_H]
             
+            # Below section does not work, do not comment out
             #constraints += [box.x >= FloorPlan.MARGIN,
             #    box.x + box.r*box.h + (1-box.r)*box.w + FloorPlan.MARGIN <= self.width]
             #constraints += [box.y >= FloorPlan.MARGIN,
@@ -268,7 +269,8 @@ class FloorPlan(object):
         for n_i, net in enumerate(self.nets):
             if len(net.moduleidxs) <= 1: continue
             # no explicit net crossing constraints
-            if False:
+            # if False:
+            if NS:
                 for n_j in range(n_i+1,len(self.nets)):
                     net_i = net
                     net_j = self.nets[n_j]
@@ -340,20 +342,20 @@ class FloorPlan(object):
                 ]
                 
                 # net crossing constraints
-                """
-                ci_x, ci_y = b_i.center
-                cj_x, cj_y = b_j.center
-                
-                if self._adj[i,j] >= 1:
-                    w_i = cp.abs(cj_x - ci_x)
-                    h_i = cp.abs(cj_y - ci_y)
-                    constraints += [
-                        ci_x + w_i/2 <= cj_x + self.boundary_W*(self.u_p[i,j] + self.u_q[i,j]) - FloorPlan.MARGIN + self.u_g[i, j],
-                        ci_y + h_i/2 <= cj_y + self.boundary_H*(1 + self.u_p[i,j] - self.u_q[i,j]) - FloorPlan.MARGIN + self.u_g[i, j],
-                        ci_x - w_j/2 >= cj_x - self.boundary_W*(1 - self.u_p[i,j] + self.u_q[i,j]) + FloorPlan.MARGIN - self.u_g[i, j],
-                        ci_y - h_j/2 >= cj_y - self.boundary_H*(2 - self.u_p[i,j] - self.u_q[i,j]) + FloorPlan.MARGIN - self.u_g[i, j],
-                    ]                    
-                    """
+                if NS:
+                    ci_x, ci_y = b_i.center
+                    cj_x, cj_y = b_j.center
+                    
+                    if self._adj[i,j] >= 1:
+                        w_i = cp.abs(cj_x - ci_x)
+                        h_i = cp.abs(cj_y - ci_y)
+                        constraints += [
+                            ci_x + w_i/2 <= cj_x + self.boundary_W*(self.u_p[i,j] + self.u_q[i,j]) - FloorPlan.MARGIN + self.u_g[i, j],
+                            ci_y + h_i/2 <= cj_y + self.boundary_H*(1 + self.u_p[i,j] - self.u_q[i,j]) - FloorPlan.MARGIN + self.u_g[i, j],
+                            ci_x - w_j/2 >= cj_x - self.boundary_W*(1 - self.u_p[i,j] + self.u_q[i,j]) + FloorPlan.MARGIN - self.u_g[i, j],
+                            ci_y - h_j/2 >= cj_y - self.boundary_H*(2 - self.u_p[i,j] - self.u_q[i,j]) + FloorPlan.MARGIN - self.u_g[i, j],
+                        ]                    
+        # I think below is the same as above, so no need for it   
         """
         _i = 0
         net_constraints_list = np.where(self._adj > 1)
